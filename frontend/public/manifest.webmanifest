@@ -1,0 +1,10 @@
+{
+  "name": "RapidRelay Emergency Response",
+  "short_name": "RapidRelay",
+  "start_url": "/#/sos",
+  "display": "standalone",
+  "background_color": "#f4f6f5",
+  "theme_color": "#168c8a",
+  "description": "Emergency alert and dispatcher coordination website",
+  "icons": []
+}

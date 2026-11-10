@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260" role="img" aria-labelledby="title desc">
+  <title id="title">Connected emergency network</title>
+  <desc id="desc">A map with connected emergency locations.</desc>
+  <rect width="360" height="260" rx="28" fill="#fff1df"/>
+  <path d="M-20 177c55-33 86-68 139-52 47 15 71 63 119 58 51-6 69-47 140-36v113H-20z" fill="#f7d8a8"/>
+  <path d="M-20 93c63 20 99-17 153 1 43 15 75 29 109 1 31-26 71-23 141 8" fill="none" stroke="#d7a85d" stroke-width="14" opacity=".65"/>
+  <path d="M23 207c71-49 90-103 170-96 48 4 54 46 145 24" fill="none" stroke="#168c8a" stroke-width="7" stroke-dasharray="12 10"/>
+  <g fill="#c2414b" stroke="#fff" stroke-width="5">
+    <circle cx="53" cy="182" r="15"/><circle cx="188" cy="112" r="15"/><circle cx="310" cy="142" r="15"/>
+  </g>
+  <g fill="#fff"><path d="M45 181h16M53 173v16" stroke="#c2414b" stroke-width="4"/><circle cx="188" cy="112" r="5"/><path d="M302 142h16M310 134v16" stroke="#c2414b" stroke-width="4"/></g>
+  <rect x="25" y="22" width="136" height="42" rx="21" fill="#fff" opacity=".9"/>
+  <circle cx="48" cy="43" r="8" fill="#168c8a"/><text x="66" y="49" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#25434d">Live response</text>
+</svg>

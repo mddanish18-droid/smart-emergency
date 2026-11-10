@@ -1,0 +1,45 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python
+.venv/
+venv/
+backend/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Node / React
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+build/
+
+# Databases and generated database files
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-wal
+*.db-shm
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+
+# Private credentials
+*service-account*.json
+*service_account*.json
+*.pem
+*.key

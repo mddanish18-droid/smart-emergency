@@ -1,0 +1,8 @@
+[
+  {"id": 1, "name": "City General Hospital (MOCK)", "lat": 28.6208, "lng": 77.3639, "specialties": ["emergency", "general", "trauma", "cardiology"], "beds": 12, "phone": "000-0001"},
+  {"id": 2, "name": "Lifeline Neuro & Trauma Centre (MOCK)", "lat": 28.5744, "lng": 77.3260, "specialties": ["emergency", "neurology", "trauma"], "beds": 6, "phone": "000-0002"},
+  {"id": 3, "name": "Sunrise Heart Institute (MOCK)", "lat": 28.6692, "lng": 77.4538, "specialties": ["cardiology", "emergency", "general"], "beds": 4, "phone": "000-0003"},
+  {"id": 4, "name": "Community Health Clinic (MOCK)", "lat": 28.5355, "lng": 77.3910, "specialties": ["general"], "beds": 20, "phone": "000-0004"},
+  {"id": 5, "name": "Metro Burns & Plastic Surgery (MOCK)", "lat": 28.4744, "lng": 77.5040, "specialties": ["burns", "trauma", "emergency", "general"], "beds": 3, "phone": "000-0005"},
+  {"id": 6, "name": "Apex Multispeciality Hospital (MOCK)", "lat": 28.5672, "lng": 77.2100, "specialties": ["emergency", "general", "trauma", "cardiology", "neurology", "burns"], "beds": 25, "phone": "000-0006"}
+]

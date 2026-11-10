@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 430" role="img" aria-labelledby="title desc">
+  <title id="title">Care coordination illustration</title>
+  <desc id="desc">A medical responder holding a tablet.</desc>
+  <rect width="360" height="430" rx="30" fill="#e9e7f7"/>
+  <circle cx="280" cy="83" r="48" fill="#c9c4eb"/>
+  <path d="M66 430c10-112 47-175 114-175 69 0 101 66 114 175z" fill="#315c88"/>
+  <path d="M130 267h94v94h-94z" fill="#fff"/>
+  <path d="M177 278v72M141 314h72" stroke="#c2414b" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="180" cy="171" r="65" fill="#c98363"/>
+  <path d="M115 171c0-62 27-93 72-93 50 0 73 35 73 86-19-20-41-28-67-28-33 0-51 17-78 35z" fill="#263a4a"/>
+  <path d="M145 190c20 17 50 17 70 0" fill="none" stroke="#7d493b" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="156" cy="166" r="5" fill="#263a4a"/><circle cx="204" cy="166" r="5" fill="#263a4a"/>
+  <rect x="42" y="259" width="86" height="112" rx="9" fill="#fff" stroke="#25434d" stroke-width="6" transform="rotate(-12 42 259)"/>
+  <path d="M65 290h44M62 315h38M59 340h48" stroke="#168c8a" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="295" cy="354" r="31" fill="#f3c86b"/><path d="M295 338v21M284 349h22" stroke="#25434d" stroke-width="6" stroke-linecap="round"/>
+</svg>
