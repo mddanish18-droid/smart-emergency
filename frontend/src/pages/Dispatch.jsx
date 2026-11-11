@@ -37,7 +37,8 @@ export default function Dispatch() {
   const [severityFilter, setSeverityFilter] = useState("all");
   const [dispatchers, setDispatchers] = useState([]);
   const [events, setEvents] = useState([]);
-  const isAdmin = dispatcherRole() === "admin";
+  const [role, setRole] = useState(dispatcherRole());
+  const isAdmin = role === "admin";
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -78,7 +79,8 @@ export default function Dispatch() {
     event.preventDefault();
     setLoginError("");
     try {
-      await login(credentials.username, credentials.password);
+      const result = await login(credentials.username.trim(), credentials.password);
+      setRole(result.role || "dispatcher");
       setAuthenticated(true);
     } catch (error) {
       setLoginError(error.message || "Could not sign in.");
@@ -177,7 +179,7 @@ export default function Dispatch() {
         <div className="dash-head">
           <div className="dash-brand-row">
             <Brand suffix=" dispatch" />
-            <button className="dash-signout" onClick={() => { logout(); setAuthenticated(false); }}>Sign out</button>
+            <button className="dash-signout" onClick={() => { logout(); setRole("dispatcher"); setAuthenticated(false); }}>Sign out</button>
           </div>
           <nav className="dash-nav" aria-label="Dispatcher navigation">
             <Link to="/"><span>⌂</span> Home</Link>

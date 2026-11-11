@@ -205,15 +205,29 @@ export default function Landing() {
               <span className="theme-switch-track"><span className="theme-switch-knob">{dark ? "☾" : "☀"}</span></span>
               <span className="theme-switch-label">{dark ? "Dark" : "Light"}</span>
             </button>
-            <button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-label="Toggle navigation">☰</button>
+            <button className="menu-toggle" type="button" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label="Toggle navigation">☰</button>
             <Link className="btn inline small" to="/sos">{text.patient}</Link>
           </div>
-          {menuOpen && <div className="mobile-menu">
+          {menuOpen && <div className="mobile-menu" id="mobile-navigation">
             <button className="navlink" onClick={() => { goTo("how"); setMenuOpen(false); }}>Alert flow</button>
             <button className="navlink" onClick={() => { goTo("roles"); setMenuOpen(false); }}>Roles</button>
             <button className="navlink" onClick={() => { goTo("benefits"); setMenuOpen(false); }}>Benefits</button>
             <button className="navlink" onClick={() => { goTo("location"); setMenuOpen(false); }}>Location</button>
             <button className="navlink" onClick={() => { goTo("safety"); setMenuOpen(false); }}>Safety</button>
+            <label className="mobile-language-select">
+              <span>Language</span>
+              <select value={language} onChange={(e) => setLanguage(e.target.value)} aria-label="Language">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="mr">मराठी</option>
+                <option value="bn">বাংলা</option>
+                <option value="gu">ગુજરાતી</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="ur">اردو</option>
+              </select>
+            </label>
           </div>}
         </nav>
 
@@ -370,10 +384,6 @@ export default function Landing() {
         <Brand />
         <span className="watermark" tabIndex="0" aria-label="Dikshu">Dikshu❤️</span>
       </footer>
-      <div className="emergency-bar" aria-label="Emergency actions">
-        <Link to="/sos">Open SOS</Link>
-        <a href="tel:112">Call 112</a>
-      </div>
     </>
   );
 }
