@@ -33,8 +33,16 @@ body {
   font-size: 17px;
   line-height: 1.5;
 }
-h1, h2, h3, p { margin: 0; }
-button, input { font: inherit; color: inherit; }
+h1, h2, h3, p 
+{
+  margin: 0;
+
+}
+button, input 
+{ 
+  font: inherit; 
+  color: inherit; 
+}
 button { cursor: pointer; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }

@@ -16,6 +16,7 @@
 
 .site-nav 
 { display: flex; 
+  flex-wrap: wrap;
   align-items: center; 
   justify-content: space-between; 
   margin-top: 18px;
@@ -35,6 +36,7 @@
   justify-content: flex-end;
   gap: 4px; 
   flex: 1;
+  min-width: 0;
 }
 .menu-toggle, .mobile-menu { display: none; }
 
@@ -62,6 +64,7 @@
   padding: 0 8px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
 }
+.mobile-language-select { display: none; }
 .theme-switch { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; font-weight: 700; }
 .theme-switch-track { display: inline-flex; align-items: center; width: 40px; height: 24px; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 18%, transparent); transition: background .2s ease; }
 .theme-switch-knob { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--card); color: var(--ink); font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: transform .2s ease; }
@@ -92,7 +95,7 @@
 .benefit-card > span, .eyebrow { color: var(--hope); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
 .benefit-card h3 { margin: 22px 0 8px; font-size: 22px; }
 .benefit-card p, .trust-panel p, .contact p { color: var(--ink-2); }
-.trust-faq { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; padding-block: 88px; }
+.trust-faq { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding-block: 64px; }
 .trust-panel { display: grid; align-content: start; gap: 16px; }
 .trust-panel h2, .faq h2, .contact h2 { font-size: 32px; }
 .faq { display: grid; gap: 12px; align-content: start; }
@@ -109,7 +112,7 @@
 .proof-strip > div { display: grid; gap: 2px; padding: 18px 20px; border: 1px solid color-mix(in srgb, var(--line) 75%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--card) 78%, transparent); box-shadow: 0 12px 30px rgba(22,32,42,.08); backdrop-filter: blur(14px); }
 .proof-strip strong { color: var(--hope); font-size: 28px; line-height: 1; }
 .proof-strip span { color: var(--ink-2); font-size: 14px; }
-.demo-section { display: grid; grid-template-columns: 1fr .9fr; gap: 64px; align-items: center; padding-block: 96px; }
+.demo-section { display: grid; grid-template-columns: 1fr .9fr; gap: 48px; align-items: center; padding-block: 68px; }
 .demo-copy h2 { margin: 10px 0 14px; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; }
 .demo-copy > p { max-width: 46ch; color: var(--ink-2); }
 .demo-link { display: block; margin-top: 18px; color: var(--hope); font-size: 14px; font-weight: 700; }
@@ -137,7 +140,7 @@ body {
     radial-gradient(circle at 92% 78%, rgba(31, 95, 209, .1), transparent 28%),
     var(--paper);
 }
-.location-preview { display: grid; grid-template-columns: 1fr .8fr; gap: 48px; align-items: center; padding-block: 88px; }
+.location-preview { display: grid; grid-template-columns: 1fr .8fr; gap: 40px; align-items: center; padding-block: 64px; }
 .location-preview h2 { margin: 10px 0; font-size: 36px; }
 .nearby-list { margin-top: 16px; display: grid; gap: 8px; }
 .nearby-list div { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--card) 58%, transparent); }
@@ -154,7 +157,7 @@ body {
 .map-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--red); font-size: 36px; text-shadow: 0 0 20px rgba(194,65,75,.7); }
 .map-hospital { position: absolute; color: #fff; background: var(--hope); border-radius: 50%; width: 34px; height: 34px; display: grid; place-items: center; font-size: 24px; box-shadow: 0 5px 16px rgba(22,140,138,.35); }
 .hospital-one { left: 22%; top: 25%; }.hospital-two { right: 18%; bottom: 22%; }
-.use-cases { padding-block: 72px; }
+.use-cases { padding-block: 56px; }
 .use-case-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .use-case-grid article { padding: 26px; border-radius: 20px; background: color-mix(in srgb, var(--card) 58%, transparent); border: 1px solid color-mix(in srgb, var(--line) 72%, transparent); }
 .case-icon { color: var(--hope); font-size: 28px; }.use-case-grid h3 { margin: 18px 0 8px; font-size: 22px; }.use-case-grid p { color: var(--ink-2); }
@@ -432,9 +435,17 @@ body {
 }
 
 .foot .watermark {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
+  margin-left: auto;
+  opacity: 0;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.foot .watermark:hover,
+.foot .watermark:focus-visible {
+  opacity: 1;
+  color: var(--hope);
+  text-shadow: 0 0 6px rgba(22, 140, 138, .8), 0 0 18px rgba(22, 140, 138, .55);
 }
 
 @media (max-width: 900px) 
@@ -469,11 +480,14 @@ body {
     grid-template-columns: 1fr; 
   }
   .nav-links .navlink, .nav-links .language-select { display: none; }
+  .mobile-menu { flex: 0 0 100%; width: 100%; }
+  .mobile-language-select { display: grid; gap: 6px; padding: 10px 9px 4px; color: var(--ink-2); font-size: 14px; }
+  .mobile-language-select select { width: 100%; }
   .theme-switch-label { display: none; }
-  .theme-switch { padding: 8px; }
-  .menu-toggle { display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--card) 58%, transparent); color: var(--ink); min-width: 40px; min-height: 40px; font-size: 20px; }
+  .theme-switch { flex: 0 0 auto; padding: 8px; }
+  .menu-toggle { display: inline-grid; flex: 0 0 40px; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--card) 58%, transparent); color: var(--ink); min-width: 40px; min-height: 40px; font-size: 20px; }
   .mobile-menu { display: grid; gap: 4px; padding: 10px 4px 2px; border-top: 1px solid var(--line); }
-  .mobile-menu .navlink { text-align: left; }
+  .mobile-menu .navlink { width: 100%; text-align: left; }
   .location-preview, .use-case-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) 
@@ -486,6 +500,10 @@ body {
 
   .site-nav .brand {
     font-size: 19px;
+  }
+
+  .site-nav .nav-links > .btn {
+    display: none;
   }
 
   .steps 
@@ -510,35 +528,8 @@ body {
   .benefit-grid { grid-template-columns: 1fr; }
   .trust-faq { gap: 36px; }
   .contact-inner { align-items: flex-start; flex-direction: column; }
-  .foot { justify-content: center; padding-bottom: 64px; }
-  .foot .watermark { bottom: 18px; }
-  .emergency-bar {
-    position: fixed;
-    z-index: 20;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 8px;
-    border: 1px solid color-mix(in srgb, var(--card) 75%, transparent);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--card) 72%, transparent);
-    box-shadow: 0 12px 30px rgba(0,0,0,.18);
-    backdrop-filter: blur(16px);
-  }
-  .emergency-bar a {
-    min-height: 46px;
-    display: grid;
-    place-items: center;
-    border-radius: 10px;
-    background: var(--hope);
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .emergency-bar a:last-child { background: var(--red); }
+  .foot { justify-content: center; padding-bottom: 28px; }
+  .foot .watermark { width: 100%; margin-left: 0; text-align: center; }
 }
 
 /* Liquid glass surfaces */

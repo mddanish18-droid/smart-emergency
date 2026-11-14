@@ -13,31 +13,59 @@ const AUTO_SEND_RESUME_MS = 10000;
 function useLocation() {
   const [pos, setPos] = useState(null);
   const [loc, setLoc] = useState({ kind: "wait", text: "Finding your location…" });
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!navigator.geolocation) {
       setLoc({ kind: "bad", text: "This browser cannot share your location." });
       return;
     }
-    const id = navigator.geolocation.watchPosition(
+    if (!window.isSecureContext && !["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+      setLoc({ kind: "bad", text: "Location sharing requires a secure HTTPS connection." });
+      return;
+    }
+    setPos(null);
+    setLoc({ kind: "wait", text: "Finding your location…" });
+    let settled = false;
+    const finish = (next) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(fallbackTimer);
+      setLoc(next);
+    };
+    const fallbackTimer = setTimeout(() => {
+      finish({ kind: "bad", text: "Location is taking too long. Check browser permissions and try again." });
+    }, 15000);
+    navigator.geolocation.getCurrentPosition(
       (p) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(fallbackTimer);
         setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
         setLoc({ kind: "ok", text: "Location found, accurate to about " + Math.round(p.coords.accuracy) + " m" });
       },
       (err) => {
-        setLoc({ kind: "bad", text: err.code === 1 ? "Location is blocked. Allow it in your browser settings." : "Cannot find your location yet." });
+        const text = err.code === 1
+          ? "Location is blocked. Allow it in your browser settings, then try again."
+          : err.code === 2
+            ? "Your device could not determine a location. Turn on Location Services, then try again."
+            : "Location took too long to respond. Check your connection and try again.";
+        finish({ kind: "bad", text });
       },
-      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+      { enableHighAccuracy: false, maximumAge: 30000, timeout: 30000 }
     );
-    return () => navigator.geolocation.clearWatch(id);
-  }, []);
+    return () => {
+      settled = true;
+      clearTimeout(fallbackTimer);
+    };
+  }, [attempt]);
 
-  return { pos, loc };
+  return { pos, loc, retry: () => setAttempt((value) => value + 1) };
 }
 
 export default function Sos() {
   const [screen, setScreen] = useState("home"); 
-  const { pos, loc } = useLocation();
+  const { pos, loc, retry } = useLocation();
   const [selected, setSelected] = useState([]);
   const [form, setForm] = useState({ age: "", name: "", phone: "" });
   const [sending, setSending] = useState(false);
@@ -217,6 +245,7 @@ export default function Sos() {
           <h1 tabIndex={-1} ref={headingRef}>Need an ambulance?</h1>
           <p className="lede">Press and hold the button for 2 seconds. We share your location and find the nearest suitable hospital.</p>
           <div className={"loc " + loc.kind}><i /><span>{loc.text}</span></div>
+          {loc.kind === "bad" && <button type="button" className="btn ghost location-retry" onClick={retry}>Try location again</button>}
           <div className="hold-wrap"><HoldButton onComplete={onHold} /></div>
           <p className="hint">Holding stops accidental alerts. Let go early to cancel.</p>
           <div className="callrow">Prefer to talk? <a href="tel:112">Call 112</a></div>

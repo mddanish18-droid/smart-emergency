@@ -27,7 +27,16 @@ if not JWT_SECRET:
     raise RuntimeError("RAPIDRELAY_JWT_SECRET must be set")
 
 app = FastAPI(title="RapidRelay API")
-allowed_origins = [origin.strip() for origin in os.getenv("RAPIDRELAY_ALLOWED_ORIGINS", "http://localhost:5173").split(",") if origin.strip()]
+
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "RAPIDRELAY_ALLOWED_ORIGINS",
+        "http://localhost:5173"
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -35,6 +44,15 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
+
+
+@app.get("/")
+def home():
+    return {
+        "app": "RapidRelay",
+        "status": "running",
+        "message": "RapidRelay API is online"
+    }
 OVERPASS_URLS = [
     url.strip()
     for url in os.getenv(
@@ -193,7 +211,7 @@ def location(lat: float = Query(ge=-90, le=90), lng: float = Query(ge=-180, le=1
 
 
 def token_for(username: str, role="dispatcher"):
-    return jwt.encode({"sub": username, "role": role, "exp": int(time.time()) + 3600}, JWT_SECRET, algorithm="HS256")
+    return jwt.encode({"sub": username, "role": role, "exp": int(time.time()) + 3600}, JWT_SECRET, algorithm="HS256") # type: ignore
 
 
 def password_hash(password: str, salt: bytes | None = None):
@@ -217,7 +235,7 @@ def dispatcher(authorization: str | None = Header(default=None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Dispatcher login required")
     try:
-        return jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"])
+        return jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"]) # type: ignore
     except jwt.PyJWTError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid dispatcher token") from exc
 
@@ -286,13 +304,20 @@ def nearby_hospitals(lat, lng):
             with urllib.request.urlopen(request, timeout=4, context=TLS_CONTEXT) as response:
                 elements = json.load(response).get("elements", [])
             for element in elements:
+                if not isinstance(element, dict):
+                    continue
                 tags = element.get("tags", {})
+                if not isinstance(tags, dict):
+                    continue
                 center = element.get("center", element)
+                if not isinstance(center, dict):
+                    continue
                 name = tags.get("name") or tags.get("official_name")
-                if not name or "lat" not in center or "lon" not in center:
+                element_type, element_id = element.get("type"), element.get("id")
+                if not name or not element_type or not element_id or "lat" not in center or "lon" not in center:
                     continue
                 hospitals.append({
-                    "id": f"osm-{element['type']}-{element['id']}",
+                    "id": f"osm-{element_type}-{element_id}",
                     "name": name,
                     "lat": center["lat"],
                     "lng": center["lon"],
@@ -333,16 +358,28 @@ def nearby_hospitals_nominatim(lat, lng):
     except (OSError, ValueError, urllib.error.URLError):
         return []
 
+    if not isinstance(results, list):
+        return []
+
     hospitals = []
     for result in results:
+        if not isinstance(result, dict):
+            continue
         if result.get("type") != "hospital" and result.get("category") != "amenity":
             continue
-        hospital_lat, hospital_lng = float(result["lat"]), float(result["lon"])
+        try:
+            hospital_lat, hospital_lng = float(result["lat"]), float(result["lon"])
+        except (KeyError, TypeError, ValueError):
+            continue
         if distance(lat, lng, hospital_lat, hospital_lng) > 50:
             continue
+        osm_type, osm_id = result.get("osm_type"), result.get("osm_id")
+        display_name = result.get("display_name")
+        if not osm_type or not osm_id or not isinstance(display_name, str) or not display_name.strip():
+            continue
         hospitals.append({
-            "id": f"osm-{result['osm_type']}-{result['osm_id']}",
-            "name": result["display_name"].split(",")[0],
+            "id": f"osm-{osm_type}-{osm_id}",
+            "name": display_name.split(",")[0],
             "lat": hospital_lat,
             "lng": hospital_lng,
             "specialties": ["emergency", "general"],
@@ -371,7 +408,7 @@ def login(payload: LoginIn):
         valid = bool(row and row["active"] and password_matches(payload.password, row["password_hash"]))
     if not valid:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    role = "admin" if payload.username == expected_user else row["role"]
+    role = "admin" if payload.username == expected_user else row["role"] # type: ignore
     return {"access_token": token_for(payload.username, role), "token_type": "bearer", "username": payload.username, "role": role}
 
 

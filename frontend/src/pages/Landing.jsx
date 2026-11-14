@@ -153,9 +153,23 @@ export default function Landing() {
       setLocationStatus("unavailable");
       return;
     }
+    if (!window.isSecureContext && !["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+      setLocationStatus("insecure");
+      return;
+    }
     setLocationStatus("checking");
+    let settled = false;
+    const fallbackTimer = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setLocationStatus("unavailable");
+      }
+    }, 15000);
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(fallbackTimer);
         setPreviewPosition([position.coords.latitude, position.coords.longitude]);
         setLocationStatus("ready");
         setDirectoryStatus("checking");
@@ -169,8 +183,13 @@ export default function Landing() {
           })
           .catch(() => setDirectoryStatus("unavailable"));
       },
-      () => setLocationStatus("unavailable"),
-      { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
+      () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(fallbackTimer);
+        setLocationStatus("unavailable");
+      },
+      { enableHighAccuracy: false, maximumAge: 30000, timeout: 30000 }
     );
   }
   function advanceDemo() {
@@ -330,7 +349,7 @@ export default function Landing() {
           <p>Your location is checked only after you choose to allow it. It is not sent from this preview.</p>
           <button className="btn inline" onClick={checkLocation}>Check my location</button>
           <p className="location-result" role="status">
-            {locationStatus === "ready" ? "Location available for an SOS." : locationStatus === "checking" ? "Checking location permission…" : locationStatus === "unavailable" ? "Location is unavailable. You can still call 112." : "Location has not been checked."}
+            {locationStatus === "ready" ? "Location available for an SOS." : locationStatus === "checking" ? "Checking location permission…" : locationStatus === "insecure" ? "Location sharing requires a secure HTTPS connection." : locationStatus === "unavailable" ? "Location is unavailable. Allow access and try again, or call 112." : "Location has not been checked."}
           </p>
           {cityLabel && <p className="location-city">Showing hospitals near {cityLabel}</p>}
           {directoryStatus === "ready" && <div className="nearby-list">{nearbyHospitals.slice(0, 3).map((hospital) => <div key={hospital.id}><strong>{hospital.name}</strong><span>{hospital.distance_km} km · about {hospital.eta_min} min</span></div>)}</div>}
